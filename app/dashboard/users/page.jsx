@@ -1,0 +1,51 @@
+
+import { Suspense } from "react";
+import { users } from "../../../lib/mongodb";
+import AddUser from "./AddUser";
+import UserCard from "./UserCard";
+import Loading from "../../../components/Loading";
+
+async function Users() {
+    let user = []
+    try {
+        user = await users.find({}).limit(20).toArray();
+    } catch (error) {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <h3 className="py-4">
+                    Error Fetching Users
+                </h3>
+            </div>)
+
+    }
+
+    if (!user || user.length === 0) {
+        return (
+            <div className="flex justify-center flex-col items-center h-full">
+                <h3 className="py-4">
+                    Add Some Users...
+                </h3>
+                <AddUser />
+            </div>)
+
+    }
+    return (
+        <>
+            <div className="flex justify-end m-4">
+                <AddUser />
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 mx-4 gap-4">
+                <Suspense fallback={<Loading />}>
+                    {
+                        user.map((item) =>
+                            <UserCard data={item} key={item._id} />
+                        )
+                    }
+                </Suspense>
+            </div>
+        </>
+    )
+}
+
+export default Users;
