@@ -3,7 +3,7 @@ import React from 'react'
 import { Button } from "../../../components/ui/button";
 
 function UserCard({data,onDelete=()=>{},onEdit=()=>{}}) {
-    const { name, role, id } = data
+    const { name, role} = data
     if (role === 'admin')return null
         return (
             <div>

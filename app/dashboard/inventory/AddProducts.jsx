@@ -11,6 +11,7 @@ function AddProducts() {
     weight:"",
     quantity: "",
     category: "",
+    amount:"" 
   });
   const [errorMsg, setErrorMsg] = useState("");
 
