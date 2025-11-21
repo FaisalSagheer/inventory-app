@@ -88,6 +88,10 @@ export const options = {
       return session;
     },
   },
+  pages:{
+    signIn:'/api/auth/signIn',
+    signOut:'/'
+  }
 };
 
 // export default NextAuth(options);

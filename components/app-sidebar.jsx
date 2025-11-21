@@ -175,7 +175,7 @@ return (
           <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
             <a href="/dashboard">
               <IconInnerShadowTop className="!size-5" />
-              <span className="text-base font-semibold">Inventory</span>
+              <span className="text-base font-semibold">Inventory App</span>
             </a>
           </SidebarMenuButton>
         </SidebarMenuItem>

@@ -9,7 +9,6 @@ import { Spinner } from "../../../components/ui/spinner";
 
 const AddUser = () => {
   const router = useRouter();
-  const Id = useId()
   const [formData, setFormData] = useState({
     name: "",
     email: "",

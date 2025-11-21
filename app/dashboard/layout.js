@@ -6,9 +6,10 @@ import { SidebarInset, SidebarProvider } from "../../components/ui/sidebar"
 import { Spinner } from "../../components/ui/spinner"
 import { Turtle } from "lucide-react"
 import Loading from "../../components/Loading"
+import Dashboard from "./page"
 
 
-export default function dashboardlayout({children}) {
+export default function dashboardlayout({ children }) {
   return (
     <SidebarProvider
       style={
@@ -22,9 +23,9 @@ export default function dashboardlayout({children}) {
         <SiteHeader />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
-          <Suspense fallback={<Loading/>}>
-            {children}
-          </Suspense>
+            <Suspense fallback={<Loading />}>
+              {children}
+            </Suspense>
           </div>
         </div>
       </SidebarInset>

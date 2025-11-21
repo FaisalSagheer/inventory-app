@@ -30,4 +30,4 @@ export default withAuth(
     },
   }
 );
-export const config = { matcher: ["/dashboard/users"]};
+export const config = { matcher: ["/dashboard"]};

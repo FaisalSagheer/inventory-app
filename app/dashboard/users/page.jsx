@@ -4,7 +4,6 @@ import { users } from "../../../lib/mongodb";
 import AddUser from "./AddUser";
 import UserCard from "./UserCard";
 import Loading from "../../../components/Loading";
-import { NextResponse } from "next/server";
 
 async function Users() {
     let user = []
