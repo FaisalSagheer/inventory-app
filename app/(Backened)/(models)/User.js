@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt";
 
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.Promise = global.Promise;
@@ -11,7 +10,7 @@ const userSchema = new Schema(
     role: {
       type: String,
       enum: ["admin", "employee"],
-      default:"admin"
+      default: "employee"
     },
     password: String,
   },

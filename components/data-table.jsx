@@ -19,6 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
@@ -30,6 +31,8 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import Loading from "./Loading";
+import AddProducts from "@/dashboard/inventory/AddProducts";
 
 // Columns definition (pure JS)
 export const columns = [
@@ -110,7 +113,7 @@ export const columns = [
     },
   },
   {
-    accessorKey: "entryBy",
+    accessorKey: "createdBy",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -120,7 +123,7 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="lowercase">{row.getValue("entryBy")}</div>,
+    cell: ({ row }) => <div className="lowercase">{row.getValue("createdBy")}</div>,
   },
   {
     accessorKey: "status",
@@ -166,7 +169,7 @@ export const columns = [
 ];
 
 // Main DataTable Component (JavaScript only)
-export default function DataTable() {
+function DataTable() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState([]);
@@ -175,17 +178,33 @@ export default function DataTable() {
   const [rowSelection, setRowSelection] = useState({});
 
   // Fetch data from MongoDB API route
+  // useEffect(() => {
+  //   fetch("/api/Products")
+  //     .then((res) => res.json())
+  //     .then((items) => {
+  //       setData(items);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to load data:", err);
+  //       setLoading(false);
+  //     });
+  // }, []);
+
   useEffect(() => {
-    fetch("/api/Products")
-      .then((res) => res.json())
-      .then((items) => {
-        setData(items);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load data:", err);
-        setLoading(false);
-      });
+    try {
+      const fetchProducts = async () => {
+        const res = await fetch("/api/Products")
+        const jsonr = await res.json()
+        setData(jsonr.product)
+        setLoading(false)
+        console.log(data)
+      }
+      fetchProducts()
+    } catch (err) {
+      console.error("Failed to load data:", err);
+      setLoading(false);
+    }
   }, []);
 
   const table = useReactTable({
@@ -209,8 +228,9 @@ export default function DataTable() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-lg">Loading data from MongoDB...</p>
+      <div className="flex items-center justify-center h-screen">
+        {/* <p className="text-lg">Loading data</p> */}
+        <Loading />
       </div>
     );
   }
@@ -218,36 +238,41 @@ export default function DataTable() {
   return (
     <div className="w-full">
       {/* Filters & Column Visibility */}
-      <div className="flex items-center py-4 gap-4">
-        <Input
-          placeholder="Filter by name..."
-          value={(table.getColumn("name")?.getFilterValue()) ?? ""}
-          onChange={(e) =>
-            table.getColumn("name")?.setFilterValue(e.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id === "entryBy" ? "Entry By" : column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex justify-between">
+        <div className="flex items-center py-4 gap-4">
+          <Input
+            placeholder="Filter by name..."
+            value={(table.getColumn("name")?.getFilterValue()) ?? ""}
+            onChange={(e) =>
+              table.getColumn("name")?.setFilterValue(e.target.value)
+            }
+            className="max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                  >
+                    {column.id === "createdBy" ? "Entry By" : column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div>
+          <AddProducts />
+        </div>
       </div>
 
       {/* Table */}
@@ -261,9 +286,9 @@ export default function DataTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -322,3 +347,5 @@ export default function DataTable() {
     </div>
   );
 }
+
+export default DataTable;

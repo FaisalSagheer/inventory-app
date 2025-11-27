@@ -1,15 +1,24 @@
 
 import { NextResponse } from "next/server";
-import Product from "@/(Backened)/(models)/Product";
 import { getServerSession } from "next-auth";
 import { options } from "../auth/[...nextauth]/options";
-import { Products } from "../../../../lib/mongodb";
+import { products } from "../../../../lib/mongodb";
+import Product from "@/(Backened)/(models)/Product";
+
+export async function GET() {
+    try {
+        const product = await products.find({}).project({_id:0}).toArray();
+        return NextResponse.json({ status:200,product })
+    } catch (error) {
+        console.log('Error Fetching Data')
+    }
+}
 
 export async function POST(req) {
+    const session = await getServerSession(options)
     try {
         const body = await req.json();
         const userData = body.formData;
-        const session = await getServerSession(options)
         //    Confirm Data Exist
         if (!userData?.name || !userData.category || !userData.quantity || !userData.weight || !userData.amount || !userData.status) {
             return NextResponse.json(
@@ -19,7 +28,7 @@ export async function POST(req) {
         }
         await Product.create({
             ...userData,
-            createdBy:session.user.name
+            createdBy: session.user.name
         });
         return NextResponse.json({ message: "Product Created." }, { status: 201 })
     } catch (error) {
@@ -28,11 +37,3 @@ export async function POST(req) {
     }
 }
 
-export async function GET() {
-    try{
-    const Product = await Products.find({}).project({__v:0,_id}).limit(20).toArray()
-    return NextResponse.json({status:201})
-    }catch(error){
-      
-    }
-}

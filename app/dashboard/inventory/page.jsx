@@ -1,6 +1,6 @@
 'use client'
-import DataTable from "../../../components/data-table"
 
+import DataTable from "../../../components/data-table"
 
 function Inventory() {
     return (

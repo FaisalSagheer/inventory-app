@@ -6,16 +6,22 @@ mongoose.Promise = global.Promise;
 const productSchema = new Schema(
     {
         name: String,
-        weight:String,
-        quantity: String,
+        weight: Number,
+        quantity: Number,
+        amount: Number,
+        status: {
+            type: String,
+            enum: ["success", "pending"],
+            default: "pending"
+        },
         category: {
             type: String,
             enum: ["grocery", "cloth"],
             default: "grocery"
         },
-        createdBy:{
-         type:String,
-         required:true
+        createdBy: {
+            type: String,
+            required: true
         },
     },
     {
