@@ -18,7 +18,7 @@ function Users() {
                 }
                 const res = await response.json()
                 setData(res.user)
-                console.log(res.user)
+                // console.log(res.user)
                 setLoading(false)
             }
             setTimeout(() => {
@@ -61,10 +61,11 @@ function Users() {
 
             <div className="grid grid-cols-2 lg:grid-cols-4 mx-4 gap-4">
                 {
-                    Data.map(user => {
-                        return <div>
-                            <UserCard data={user} />
-                        </div>
+                    Data.map((user, index) => {
+                        return (
+                            <div key={index}>
+                                <UserCard data={user} />
+                            </div>)
                     }
                     )
                 }

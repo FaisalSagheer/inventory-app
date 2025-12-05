@@ -1,13 +1,11 @@
 'use client'
 import { ChevronDownIcon, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React, { Suspense, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
 import { Button } from "../../../components/ui/button";
-import { Spinner } from '../../../components/ui/spinner';
 import Loading from "../../../components/Loading";
 
-function AddProducts() {
+function AddCategory() {
 
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +26,7 @@ function AddProducts() {
     e.preventDefault();
     setErrorMsg("");
 
-    const res = await fetch("/api/Products", {
+    const res = await fetch("/api/Category", {
       method: "POST",
       body: JSON.stringify({ formData }),
       headers: { "Content-type": "application/json" },
@@ -52,12 +50,12 @@ function AddProducts() {
         <DialogTrigger asChild>
           <Button variant="outline">
             <Plus className="mr-2 h-4 w-4" />
-            Add Products
+            Add Category
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogTitle>
-            Add a New Product
+            Add a New Category
           </DialogTitle>
           <form onSubmit={handleSubmit} method="post" className="space-y-6">
 
@@ -150,4 +148,4 @@ function AddProducts() {
   )
 }
 
-export default AddProducts
+export default AddCategory

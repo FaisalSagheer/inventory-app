@@ -7,10 +7,11 @@ import Product from "@/(Backened)/(models)/Product";
 
 export async function GET() {
     try {
-        const product = await products.find({}).project({_id:0}).toArray();
-        return NextResponse.json({ status:200,product })
+        const product = await products.find({}).project({ _v: 0 }).toArray();
+        return NextResponse.json({ status: 200, product })
     } catch (error) {
-        console.log('Error Fetching Data')
+        console.log('Error Fetching Data', error)
+        return NextResponse.json({ status: 409 })
     }
 }
 
@@ -37,3 +38,13 @@ export async function POST(req) {
     }
 }
 
+export async function DELETE(req) {
+    try {
+        const id = req.nextUrl.searchParams.get('id');
+        await Product.findByIdAndDelete(id);
+        products;
+        return NextResponse.json({ message: 'Product Deleted' }, { status: 200 })
+    } catch (error) {
+        console.log('Error Fetching Data')
+    }
+}

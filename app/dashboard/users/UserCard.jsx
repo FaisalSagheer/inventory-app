@@ -1,9 +1,10 @@
 'use client'
 import React from 'react'
 import { Button } from "../../../components/ui/button";
+import DeleteUser from './DeleteUser';
 
-function UserCard({ data, onDelete = () => { }, onEdit = () => { } }) {
-    const { name, role } = data
+function UserCard({ data }) {
+    const { name, role, _id } = data
     return (
         <div>
 
@@ -22,7 +23,7 @@ function UserCard({ data, onDelete = () => { }, onEdit = () => { } }) {
                         {/* <p className="text-base">{_id}</p> */}
                     </div>
                     <div className='flex gap-4 pt-6 items-center'>
-                        <Button variant='destructive' onClick={() => onDelete}>Delete</Button>
+                        <Button variant='destructive' onClick={() => DeleteUser(_id)}>Delete</Button>
                         <Button variant='edit'>Edit</Button>
                     </div>
                 </div>

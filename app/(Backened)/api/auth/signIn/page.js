@@ -18,27 +18,34 @@ export default function SignIn() {
   const [userData, setUserData] = useState({ name: "", password: "" });
   const handlesignIn = async (e) => {
     e.preventDefault();
-    if (!userData.name) {
-      toast("Type Name");
-      return;
-    } else if (!userData.password) {
-      toast("Type Password");
-      return;
-    }
-    else {
-      try {
+    try {
+      if (!userData.name && !userData.password) {
+        toast('Name & Password Required')
+        return;
+      }
+      if (!userData.name) {
+        toast("Name Required");
+        return;
+      }
+      if (!userData.password) {
+        toast("Password Required");
+        return;
+      }
+      else {
         await signIn('credentials',
           // 'password', { redirect: false, password: !userData.password },
           {
             name: userData.name,
             password: userData.password,
             redirect: true,
-            callbackUrl: '/dashboard'
+            callbackUrl: '/dashboard',
+            // error:'/api/auth/error'
           },
         )
-      } catch (error) {
-        toast('Login Error')
+
       }
+    } catch (error) {
+      toast('Login Error', error)
     }
   };
   return (
@@ -80,6 +87,7 @@ export default function SignIn() {
                 <Input
                   id="password"
                   type="password"
+                  placeholder="Password"
                   value={userData.password}
                   onChange={(e) =>
                     setUserData({ ...userData, password: e.target.value })

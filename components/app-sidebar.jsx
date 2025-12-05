@@ -6,6 +6,7 @@ import {
   IconChartBar,
   IconDashboard,
   IconDatabase,
+  IconFile,
   IconFileAi,
   IconFileDescription,
   IconFileWord,
@@ -17,6 +18,7 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
+  IconUser,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -59,79 +61,87 @@ export function AppSidebar({
         icon: IconListDetails,
       },
       {
-        title: "Category",
+        title: "Categories",
         url: "/dashboard/category",
         icon: IconList,
       },
-    // {
-    //   title: "Analytics",
-    //   url: "#",
-    //   icon: IconChartBar,
-    // },
-    
+      {
+        title: "Vendors",
+        url: "/dashboard/vendors",
+        icon: IconChartBar,
+      },
       ...(session?.user?.role === 'admin' ? [
         {
           title: "Users",
           url: "/dashboard/users",
           icon: IconUsers,
-        }
+        }, {
+          title: "Employees",
+          url: "/dashboard/employees",
+          icon: IconUser,
+        },
       ]
         : [])
-        ,
+      ,
+      {
+        title: "Reports",
+        url: "#",
+        icon: IconFile,
+      },
       {
         title: "Settings",
         url: "#",
         icon: IconSettings,
       },
     ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
+    navClouds: [
+      {
+        title: "Capture",
+        icon: IconCamera,
+        isActive: true,
+        url: "#",
+        items: [
+          {
+            title: "Active Proposals",
+            url: "#",
+          },
+          {
+            title: "Archived",
+            url: "#",
+          },
+        ],
+      },
+      {
+        title: "Proposal",
+        icon: IconFileDescription,
+        url: "#",
+        items: [
+          {
+            title: "Active Proposals",
+            url: "#",
+          },
+          {
+            title: "Archived",
+            url: "#",
+          },
+        ],
+      },
+      {
+        title: "Prompts",
+        icon: IconFileAi,
+        url: "#",
+        items: [
+          {
+            title: "Active Proposals",
+            url: "#",
+          },
+          {
+            title: "Archived",
+            url: "#",
+          },
+        ],
+      },
+    ],
     navSecondary: [
       {
         title: "Settings",
@@ -149,46 +159,46 @@ export function AppSidebar({
         icon: IconSearch,
       },
     ],
-      documents: [
-        {
-          name: "Data Library",
-          url: "#",
-          icon: IconDatabase,
-        },
-        {
-          name: "Reports",
-          url: "#",
-          icon: IconReport,
-        },
-        {
-          name: "Word Assistant",
-          url: "#",
-          icon: IconFileWord,
-        },
-      ],
+    documents: [
+      {
+        name: "Data Library",
+        url: "#",
+        icon: IconDatabase,
+      },
+      {
+        name: "Reports",
+        url: "#",
+        icon: IconReport,
+      },
+      {
+        name: "Word Assistant",
+        url: "#",
+        icon: IconFileWord,
+      },
+    ],
   }
-return (
-  <Sidebar collapsible="offcanvas" {...props}>
-    <SidebarHeader>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-            <a href="/dashboard">
-              <IconInnerShadowTop className="!size-5" />
-              <span className="text-base font-semibold">Inventory App</span>
-            </a>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </SidebarHeader>
-    <SidebarContent>
-      <NavMain items={data.navMain} />
-      {/* <NavDocuments items={data.documents} /> */}
-      {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
-    </SidebarContent>
-    <SidebarFooter>
-      <NavUser user={data.user} />
-    </SidebarFooter>
-  </Sidebar>
-);
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+              <a href="/dashboard">
+                <IconInnerShadowTop className="!size-5" />
+                <span className="text-base font-semibold">Inventory App</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        {/* <NavDocuments items={data.documents} /> */}
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+    </Sidebar>
+  );
 }

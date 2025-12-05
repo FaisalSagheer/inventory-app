@@ -33,6 +33,7 @@ import {
 } from "./ui/table";
 import Loading from "./Loading";
 import AddProducts from "@/dashboard/inventory/AddProducts";
+import { useRouter } from "next/navigation";
 
 // Columns definition (pure JS)
 export const columns = [
@@ -69,7 +70,7 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "category",
@@ -158,7 +159,7 @@ export const columns = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
             <DropdownMenuItem>Edit Item</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem className="text-red-600" >
               Delete Item
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -190,7 +191,7 @@ function DataTable() {
   //       setLoading(false);
   //     });
   // }, []);
-
+  // const router = useRouter()
   useEffect(() => {
     try {
       const fetchProducts = async () => {
@@ -198,9 +199,11 @@ function DataTable() {
         const jsonr = await res.json()
         setData(jsonr.product)
         setLoading(false)
-        console.log(data)
+        // router.refresh()
+        // console.log(data)
       }
       fetchProducts()
+      
     } catch (err) {
       console.error("Failed to load data:", err);
       setLoading(false);
@@ -238,13 +241,13 @@ function DataTable() {
   return (
     <div className="w-full">
       {/* Filters & Column Visibility */}
-      <div className="flex justify-between">
-        <div className="flex items-center py-4 gap-4">
+      <div className="flex justify-between items-center pb-6">
+        <div className="flex items-center gap-4">
           <Input
-            placeholder="Filter by name..."
-            value={(table.getColumn("name")?.getFilterValue()) ?? ""}
+            placeholder="Filter by column..."
+            value={(table.getColumn("name" && "weight" && "createdBy" && "amount")?.getFilterValue()) ?? ""}
             onChange={(e) =>
-              table.getColumn("name")?.setFilterValue(e.target.value)
+              table.getColumn("name" && "weight" && "createdBy" && "amount")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
@@ -264,7 +267,7 @@ function DataTable() {
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) => column.toggleVisibility(!!value)}
                   >
-                    {column.id === "createdBy" ? "Entry By" : column.id}
+                    {column.id === "createdBy" ? "entry By" : column.id}
                   </DropdownMenuCheckboxItem>
                 ))}
             </DropdownMenuContent>

@@ -15,7 +15,7 @@ export default withAuth(
       req.nextUrl.pathname.startsWith("/dashboard/users") &&
       req.nextauth.token.role != "admin"
     ) {
-      return NextResponse.rewrite(new URL("/Denied", req.url));
+      return NextResponse.rewrite(new URL("/denied", req.url));
     }
     // if (
     //   req.nextUrl.pathname.startsWith("/dashboard/inventory") &&

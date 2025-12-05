@@ -38,19 +38,19 @@ export const options = {
     //   clientSecret: process.env.GOOGLE_Secret,
     // }),
     Credentials({
-      name: "Credentials",
-      credentials: {
-        name: {
-          label: "name",
-          type: "text",
-          placeholder: "your-name",
-        },
-        password: {
-          label: "password",
-          type: "password",
-          placeholder: "your-password",
-        },
-      },
+      // name: "Credentials",
+      // credentials: {
+      //   name: {
+      //     label: "name",
+      //     type: "text",
+      //     placeholder: "your-name",
+      //   },
+      //   password: {
+      //     label: "password",
+      //     type: "password",
+      //     placeholder: "your-password",
+      //   },
+      // },
       async authorize(credentials) {
         try {
           const foundUser = await User.findOne({ name: credentials.name })
@@ -58,23 +58,27 @@ export const options = {
             .exec();
 
           if (foundUser) {
-            console.log("User Exist");
+            // console.log("User Exist");
             const match = await bcrypt.compare(
               credentials.password,
               foundUser.password
             );
             if (match) {
-              console.log("Good Pass");
+              // console.log("Good Pass");
               delete foundUser.password;
               // foundUser["role"] = "Unverified";
               // foundUser["role"] = "admin";
               return foundUser;
             }
+            // else {
+            //   console.log("Wrong")
+            //   return null;
+            // }
           }
         } catch (error) {
           console.log(error);
         }
-        return null;
+        return null
       },
     }),
   ],
@@ -88,9 +92,10 @@ export const options = {
       return session;
     },
   },
-  pages:{
-    signIn:'/api/auth/signIn',
-    signOut:'/'
+  pages: {
+    signIn: '/api/auth/signIn',
+    error: '/api/auth/error',
+    signOut: '/',
   }
 };
 

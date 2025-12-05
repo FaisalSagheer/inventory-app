@@ -1,12 +1,12 @@
 'use client'
 import React from 'react'
 
-function CategoryCard() {
+function Vendors() {
   return (
     <div>
-      Category
+      Vendors
     </div>
   )
 }
 
-export default CategoryCard
+export default Vendors
