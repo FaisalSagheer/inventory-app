@@ -9,7 +9,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Trash } from "lucide-react";
 
 import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
@@ -33,9 +33,9 @@ import {
 } from "./ui/table";
 import Loading from "./Loading";
 import AddProducts from "@/dashboard/inventory/AddProducts";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "sonner";
 
-// Columns definition (pure JS)
 export const columns = [
   {
     id: "select",
@@ -159,7 +159,7 @@ export const columns = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
             <DropdownMenuItem>Edit Item</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600" >
+            <DropdownMenuItem className="text-red-600" onClick={(e) => handleDelete(e, item._id || item.id)}>
               Delete Item
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -169,7 +169,23 @@ export const columns = [
   },
 ];
 
-// Main DataTable Component (JavaScript only)
+const handleDelete = async (e, id) => {
+  e.preventDefault()
+  try {
+    const res = await fetch(`/api/Products/${id}`, {
+      method: 'DELETE'
+    })
+    console.log(res)
+    if (res.ok) {
+      return toast.success(res.message)
+    } else {
+      return toast.error(res.message)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 function DataTable() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -178,32 +194,21 @@ function DataTable() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
-  // Fetch data from MongoDB API route
-  // useEffect(() => {
-  //   fetch("/api/Products")
-  //     .then((res) => res.json())
-  //     .then((items) => {
-  //       setData(items);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Failed to load data:", err);
-  //       setLoading(false);
-  //     });
-  // }, []);
-  // const router = useRouter()
   useEffect(() => {
     try {
       const fetchProducts = async () => {
         const res = await fetch("/api/Products")
-        const jsonr = await res.json()
-        setData(jsonr.product)
+        if (!res.ok) {
+          toast.error(res.message)
+        }
+        const products = await res.json()
+        setData(products)
         setLoading(false)
         // router.refresh()
         // console.log(data)
       }
       fetchProducts()
-      
+
     } catch (err) {
       console.error("Failed to load data:", err);
       setLoading(false);
@@ -273,7 +278,10 @@ function DataTable() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div>
+        <div className="space-x-2">
+          <Button>
+            <Trash/>
+            Delete</Button>
           <AddProducts />
         </div>
       </div>
@@ -306,7 +314,9 @@ function DataTable() {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      <Link href={`/Product/${data._id || data.id}`}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </Link>
                     </TableCell>
                   ))}
                 </TableRow>

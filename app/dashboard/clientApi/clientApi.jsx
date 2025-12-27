@@ -1,15 +1,17 @@
 'use client'
 import { useEffect, useState } from "react";
 
-const ProductsLength = () => {
-
-    const [Data, setData] = useState([])
+export function ProductsLength() {
+    const [DataLength, setDataLength] = useState(0)
     useEffect(() => {
         try {
             const fetchProducts = async () => {
                 const res = await fetch("/api/Products")
-                const jsonr = await res.json()
-                setData(jsonr.product)
+                if (!res.ok) {
+                    console.log("Error Fetching Products")  
+                }
+                const products = await res.json()
+                setDataLength(products.length)
                 // setLoading(false)
                 // console.log(data)
             }
@@ -21,19 +23,19 @@ const ProductsLength = () => {
     }, []);
     return (
         <>
-            {Data.length}
+            {DataLength}
         </>
     )
-}
+};
 
-const UsersLength = () => {
-    const [data, setData] = useState([])
+export function UsersLength() {
+    const [DataLength, setDataLength] = useState(0)
     useEffect(() => {
         try {
             const fetchProducts = async () => {
                 const res = await fetch("/api/Users")
-                const jsonr = await res.json()
-                setData(jsonr.user)
+                const users = await res.json()
+                setDataLength(users.length)
                 // setLoading(false)
                 // console.log(data)
             }
@@ -46,8 +48,7 @@ const UsersLength = () => {
     // console.log(data.length)
     return (
         <>
-            {data.length}
+            {DataLength}
         </>
     )
-}
-export { UsersLength, ProductsLength }
+};

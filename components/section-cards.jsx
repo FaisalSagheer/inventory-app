@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card"
-import { ProductsLength, UsersLength } from "@/dashboard/clientApi/clientApi";
 import { useSession } from "next-auth/react";
+import { ProductsLength, UsersLength } from "@/dashboard/clientApi/clientApi";
 export function SectionCards() {
   const { data: session } = useSession()
   return (
@@ -43,7 +43,6 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Products</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {/* {Data.length}  */}
             {ProductsLength()}
           </CardTitle>
           <CardAction>

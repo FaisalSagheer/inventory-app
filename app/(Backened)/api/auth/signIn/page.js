@@ -3,7 +3,6 @@ import { Button } from "../../../../../components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../../../../../components/ui/card";
@@ -18,34 +17,28 @@ export default function SignIn() {
   const [userData, setUserData] = useState({ name: "", password: "" });
   const handlesignIn = async (e) => {
     e.preventDefault();
+    if (!userData.name || !userData.password) {
+      return toast.error('Name & Password Required')
+    }
+    if (!userData.name) {
+      return toast.error("Name Required")
+    }
+    if (!userData.password) {
+      return toast.error("Password Required");
+    }
     try {
-      if (!userData.name && !userData.password) {
-        toast('Name & Password Required')
-        return;
-      }
-      if (!userData.name) {
-        toast("Name Required");
-        return;
-      }
-      if (!userData.password) {
-        toast("Password Required");
-        return;
-      }
-      else {
-        await signIn('credentials',
-          // 'password', { redirect: false, password: !userData.password },
-          {
-            name: userData.name,
-            password: userData.password,
-            redirect: true,
-            callbackUrl: '/dashboard',
-            // error:'/api/auth/error'
-          },
-        )
-
-      }
+      await signIn('credentials',
+        // 'password', { redirect: false, password: !userData.password },
+        {
+          name: userData.name,
+          password: userData.password,
+          redirect: true,
+          callbackUrl: '/dashboard',
+          // error:'/api/auth/error'
+        },
+      )
     } catch (error) {
-      toast('Login Error', error)
+      toast.error('Login Error', error)
     }
   };
   return (

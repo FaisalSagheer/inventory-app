@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
 import { Button } from "../../../components/ui/button";
-import { Toaster } from "../../../components/ui/sonner";
 import { toast } from "sonner";
 
 const AddUser = () => {
@@ -26,20 +25,36 @@ const AddUser = () => {
     }));
   };
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    if (!formData.name || !formData.email || !formData.password || !formData.role) {
+      return toast.error("All fields are required")
+    }
+    if (!formData.name) {
+      return toast.error('Name required')
+    }
+    if (!formData.email) {
+      return toast.error('Email Required')
+    }
+    if (!formData.password) {
+      return toast.error('Password Required')
+    }
+    if (!formData.role) {
+      return toast.error('Role Required')
+    }
     const res = await fetch("/api/Users", {
       method: "POST",
       body: JSON.stringify({ formData }),
       headers: { "Content-type": "application/json" },
-    });
+    })
 
     if (!res.ok) {
-      const response = await res.json();
-      toast(response.message)
+      const response = await res.json()
+      return toast.error(response.message)
+    } else if(res.ok){
+      const response = await res.json()
+      return toast.success(response.message)
     }
-    else {
-      router.refresh();
-    }
+    // return router.refresh()
   };
   return (
     <>
@@ -159,7 +174,6 @@ const AddUser = () => {
         </DialogContent>
 
       </Dialog>
-      <Toaster />
 
     </>
   );

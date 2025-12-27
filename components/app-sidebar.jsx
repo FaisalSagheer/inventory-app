@@ -65,29 +65,30 @@ export function AppSidebar({
         url: "/dashboard/category",
         icon: IconList,
       },
-      {
-        title: "Vendors",
-        url: "/dashboard/vendors",
-        icon: IconChartBar,
-      },
+      // {
+      //   title: "Vendors",
+      //   url: "/dashboard/vendors",
+      //   icon: IconChartBar,
+      // },
       ...(session?.user?.role === 'admin' ? [
         {
           title: "Users",
           url: "/dashboard/users",
           icon: IconUsers,
-        }, {
-          title: "Employees",
-          url: "/dashboard/employees",
-          icon: IconUser,
-        },
+        }, 
+        // {
+        //   title: "Employees",
+        //   url: "/dashboard/employees",
+        //   icon: IconUser,
+        // },
       ]
         : [])
       ,
-      {
-        title: "Reports",
-        url: "#",
-        icon: IconFile,
-      },
+      // {
+      //   title: "Reports",
+      //   url: "#",
+      //   icon: IconFile,
+      // },
       {
         title: "Settings",
         url: "#",

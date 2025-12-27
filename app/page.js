@@ -1,9 +1,6 @@
 'use client'
-import Link from 'next/link'
-
 import React from 'react'
-import { Button } from '../components/ui/button'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 
 // const push = window.location.href('/dashboard')

@@ -26,6 +26,28 @@ function AddProducts() {
   // const router = useRouter()
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // if (!formData.name || !formData.quantity || !formData.amount || !formData.category || !formData.status) {
+    //   return toast.error("All fields are required")
+    // }
+    // if (!formData.name) {
+    //   return toast.error('Name required')
+    // }
+    // if (!formData.weight) {
+    //   return toast.error('weight Required')
+    // }
+    // if (!formData.quantity) {
+    //   return toast.error('quantity Required')
+    // }
+    // if (!formData.amount) {
+    //   return toast.error('amount Required')
+    // }
+    // if (!formData.category) {
+    //   return toast.error('category Required')
+    // }
+    // if (!formData.status) {
+    //   return toast.error('status Required')
+    // }
+
     const res = await fetch("/api/Products", {
       method: "POST",
       body: JSON.stringify({ formData }),
@@ -33,14 +55,12 @@ function AddProducts() {
     });
     // console.log(formData)
     const response = await res.json();
-    if (res.ok) {
-      toast(response.message)
-      // router.refresh()
-      location.reload()
+    if (!res.ok) {
+      toast.error(response.message)
     }
-    else {
-      toast(response.message)
-      // router.push('/dashboard/inventory')
+    else if(res.ok) {
+      toast.success(response.message)
+      location.reload()
     }
 
   };
