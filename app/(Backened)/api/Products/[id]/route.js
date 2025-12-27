@@ -11,11 +11,11 @@ export async function DELETE(request, { params }) {
         if (!id) {
             return new NextResponse(JSON.stringify({ message: "Product ID not found" }), { status: 400 })
         }
-        const deletedUser = await Product.findByIdAndDelete(id)
-        if (!deletedUser) {
+        const deletedProduct = await Product.findByIdAndDelete(id)
+        if (!deletedProduct) {
             return new NextResponse(JSON.stringify({ message: "Product not found in the db" }), { status: 400 })
         }
-        return new NextResponse(JSON.stringify({ message: 'Product Deleted!', User: deletedUser }), { status: 200 })
+        return new NextResponse(JSON.stringify({ message: 'Product Deleted!', User: deletedProduct }), { status: 200 })
     } catch (error) {
         return new NextResponse("Error In Deleting Product" + error.message, { status: 500 })
     }

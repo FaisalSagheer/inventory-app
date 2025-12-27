@@ -17,8 +17,7 @@ export async function POST(req) {
         });
         return NextResponse.json({ message: "Product Created." }, { status: 201 })
     } catch (error) {
-        console.log(error);
-        return NextResponse.json({ message: "Error Creating Product", error }, { status: 500 });
+        return NextResponse.json("Error Creating Product" + error.message, { status: 500 });
     }
 }
 
@@ -28,7 +27,6 @@ export async function GET() {
         const products = await Product.find().sort({ createdAt: -1 });
         return new NextResponse(JSON.stringify(products), { status: 200 })
     } catch (error) {
-        // console.log('Error Fetching Data', error)
         return new NextResponse('Error Fetching Products' + error.message, { status: 500 })
     }
 }
@@ -36,9 +34,12 @@ export async function DELETE() {
     try {
         await connect();
         const deleteMany = await Product.deleteMany();
-        return new NextResponse(JSON.stringify({ message: 'Products Deleted', Product: deleteMany }), { status: 200 })
+        if (deleteMany.deletedCount === 0) {
+            return new NextResponse(JSON.stringify({ message: 'Empty!' }), { status: 400 })
+        }
+        return new NextResponse(JSON.stringify({ message: 'Products Deleted!', Product: deleteMany }), { status: 200 })
     } catch (error) {
-        return new NextResponse(('Deletion Error' + error.message), { status: 500 })
+        return new NextResponse('Deletion Error' + error.message, { status: 500 })
     }
 }
 

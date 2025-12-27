@@ -186,6 +186,22 @@ const handleDelete = async (e, id) => {
   }
 }
 
+const handleDeleteAll = async (e) => {
+  e.preventDefault()
+  try {
+    const res = await fetch("/api/Products", {
+      method: 'DELETE'
+    })
+    if (!res.ok) {
+      return toast.error(res.message)
+    } else {
+      return toast.success(res.message)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 function DataTable() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -204,8 +220,6 @@ function DataTable() {
         const products = await res.json()
         setData(products)
         setLoading(false)
-        // router.refresh()
-        // console.log(data)
       }
       fetchProducts()
 
@@ -279,9 +293,10 @@ function DataTable() {
           </DropdownMenu>
         </div>
         <div className="space-x-2">
-          <Button>
-            <Trash/>
-            Delete</Button>
+          <Button onClick={(e) => handleDeleteAll(e)}>
+            <Trash />
+            Delete
+          </Button>
           <AddProducts />
         </div>
       </div>
