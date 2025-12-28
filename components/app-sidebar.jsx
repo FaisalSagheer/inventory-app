@@ -19,6 +19,7 @@ import {
   IconSearch,
   IconSettings,
   IconUser,
+  IconUserCircle,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -90,9 +91,9 @@ export function AppSidebar({
       //   icon: IconFile,
       // },
       {
-        title: "Settings",
-        url: "#",
-        icon: IconSettings,
+        title: "Account",
+        url: "/dashboard/account",
+        icon:IconUserCircle,
       },
     ],
     navClouds: [

@@ -16,7 +16,7 @@ export function SectionCards() {
   const { data: session } = useSession()
   return (
     <div
-      className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+      className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-2">
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Revenue</CardDescription>
@@ -61,8 +61,7 @@ export function SectionCards() {
           </div>
         </CardFooter>
       </Card>
-      {/* {...(session?.user?.name === 'Tim' ? */}
-        <Card className="@container/card">
+        {/* <Card className="@container/card">
           <CardHeader>
             <CardDescription>Employees</CardDescription>
             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -81,10 +80,9 @@ export function SectionCards() {
             </div>
             <div className="text-muted-foreground">Engagement exceed targets</div>
           </CardFooter>
-        </Card>
-        {/* : [])} */}
+        </Card> */}
 
-      <Card className="@container/card">
+      {/* <Card className="@container/card">
         <CardHeader>
           <CardDescription>Growth Rate</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -103,7 +101,7 @@ export function SectionCards() {
           </div>
           <div className="text-muted-foreground">Meets growth projections</div>
         </CardFooter>
-      </Card>
+      </Card> */}
     </div>
   );
 }

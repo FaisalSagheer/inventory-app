@@ -35,6 +35,7 @@ import Loading from "./Loading";
 import AddProducts from "@/dashboard/inventory/AddProducts";
 import Link from "next/link";
 import { toast } from "sonner";
+import { HandleDelete } from "@/dashboard/inventory/handleDelete";
 
 export const columns = [
   {
@@ -61,76 +62,64 @@ export const columns = [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Name
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    header: () => { return (<div>Name</div >) }
+    ,
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "category",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Category
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div className="lowercase">{row.getValue("category")}</div>,
+    header: () => <div>Category</div>,
+    cell: ({ row }) => {
+      const category = row.getValue("category");
+      return <div>{category || "-"}</div>;
+    },
   },
   {
     accessorKey: "weight",
-    header: () => <div className="text-right">Weight</div>,
+    header: () => <div>Weight</div>,
     cell: ({ row }) => {
       const weight = row.getValue("weight");
-      return <div className="text-right font-medium">{weight || "-"}</div>;
+      return <div className="pl-4 font-medium">{weight || "-"}</div>;
     },
   },
   {
     accessorKey: "quantity",
-    header: () => <div className="text-right">Quantity</div>,
+    header: () => <div>Quantity</div>,
     cell: ({ row }) => {
       const qty = row.getValue("quantity");
-      return <div className="text-right font-medium">{qty ?? "-"}</div>;
+      return <div className="pl-4 font-medium">{qty ?? "-"}</div>;
     },
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div>Amount</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount") || 0);
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
       }).format(amount);
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="pl-1 font-medium">{formatted}</div>;
     },
   },
-  {
-    accessorKey: "createdBy",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Entry By
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div className="lowercase">{row.getValue("createdBy")}</div>,
-  },
+  // {
+  //   accessorKey: "createdBy",
+  //   header: ({ column }) => (
+  //     <Button
+  //       variant="ghost"
+  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //     >
+  //       Entry By
+  //       <ArrowUpDown className="ml-2 h-4 w-4" />
+  //     </Button>
+  //   ),
+  //   cell: ({ row }) => <div className="lowercase">{row.getValue("createdBy")}</div>,
+  // },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize font-medium">
+      <div className="font-medium">
         {row.getValue("status") || "pending"}
       </div>
     ),
@@ -159,7 +148,7 @@ export const columns = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View Details</DropdownMenuItem>
             <DropdownMenuItem>Edit Item</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600" onClick={(e) => handleDelete(e, item._id || item.id)}>
+            <DropdownMenuItem className="text-red-600" onClick={(e) => HandleDelete(e, item._id || item.id)}>
               Delete Item
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -169,22 +158,7 @@ export const columns = [
   },
 ];
 
-const handleDelete = async (e, id) => {
-  e.preventDefault()
-  try {
-    const res = await fetch(`/api/Products/${id}`, {
-      method: 'DELETE'
-    })
-    console.log(res)
-    if (res.ok) {
-      return toast.success(res.message)
-    } else {
-      return toast.error(res.message)
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
+
 
 const handleDeleteAll = async (e) => {
   e.preventDefault()
@@ -264,9 +238,9 @@ function DataTable() {
         <div className="flex items-center gap-4">
           <Input
             placeholder="Filter by column..."
-            value={(table.getColumn("name" && "weight" && "createdBy" && "amount")?.getFilterValue()) ?? ""}
+            value={(table.getColumn("name" ?? "weight" ?? "createdBy" ?? "amount")?.getFilterValue()) ?? ""}
             onChange={(e) =>
-              table.getColumn("name" && "weight" && "createdBy" && "amount")?.setFilterValue(e.target.value)
+              table.getColumn("name" ?? "weight" ?? "createdBy" ?? "amount")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
@@ -292,10 +266,10 @@ function DataTable() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="space-x-2">
-          <Button onClick={(e) => handleDeleteAll(e)}>
+        <div className="flex space-x-2">
+          <Button className='hidden lg:flex' onClick={(e) => handleDeleteAll(e)}>
             <Trash />
-            Delete
+            Delete All
           </Button>
           <AddProducts />
         </div>
@@ -328,7 +302,7 @@ function DataTable() {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} setData={setData}>
                       <Link href={`/Product/${data._id || data.id}`}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </Link>
