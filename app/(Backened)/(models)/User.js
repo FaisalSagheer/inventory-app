@@ -1,13 +1,11 @@
 
 import mongoose, { Schema } from 'mongoose';
 
-mongoose.connect(process.env.MONGODB_URI);
-mongoose.Promise = global.Promise;
-
 const userSchema = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, lowercase: true, minlength: 10 },
+    phone: { type: String, required: true },
+    email: { type: String, required: true},
     role: {
       type: String,
       required: true,

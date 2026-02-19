@@ -12,98 +12,111 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Toaster } from "../../../../../components/ui/sonner";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Loading from "../../../../../components/Loading";
 
 export default function SignIn() {
   const [userData, setUserData] = useState({ name: "", password: "" });
+  const [loading, setLoading] = useState(false)
+  const router = useRouter(null)
   const handlesignIn = async (e) => {
     e.preventDefault();
-    if (!userData.name || !userData.password) {
-      return toast.error('Name & Password Required')
-    }
-    if (!userData.name) {
-      return toast.error("Name Required")
-    }
-    if (!userData.password) {
-      return toast.error("Password Required");
-    }
     try {
-      await signIn('credentials',
-        // 'password', { redirect: false, password: !userData.password },
+      if (!userData.name && !userData.password) {
+        return toast.error('Name & Password Required')
+      }
+      if (!userData.name) {
+        return toast.error('Name Required!')
+      }
+      if (!userData.password) {
+        return toast.error('Password Required!')
+      }
+      setLoading(true)
+      const login = await signIn('credentials',
         {
           name: userData.name,
           password: userData.password,
-          redirect: true,
-          callbackUrl: '/dashboard',
-          // error:'/api/auth/error'
+          redirect: false,
+          callbackUrl: '/dashboard'
         },
       )
+      if (login.ok) {
+        router.push('/dashboard')
+        return toast.success("Login Successfull")
+      } else {
+        setLoading(false)
+        return toast.error("Incorrect Name Or Password")
+      }
     } catch (error) {
       toast.error('Login Error', error)
+
     }
   };
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <Toaster />
-      <Card className='w-full max-w-sm'>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          {/* <CardDescription>
+    <>
+      <Toaster/>
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+        <Card className='w-full max-w-sm'>
+          <CardHeader>
+            <CardTitle>Login to your account</CardTitle>
+            {/* <CardDescription>
             Enter your email below to login to your account
           </CardDescription> */}
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="FullName"
-                  value={userData.name}
-                  onChange={(e) =>
-                    setUserData({ ...userData, name: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
+          </CardHeader>
+          <CardContent>
+            <form>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-3">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="FullName"
+                    value={userData.name}
+                    onChange={(e) =>
+                      setUserData({ ...userData, name: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="grid gap-3">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Password</Label>
+                    {/* <a
                     href="#"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </a> */}
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    value={userData.password}
+                    onChange={(e) =>
+                      setUserData({ ...userData, password: e.target.value })
+                    }
+                    required
+                  />
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Password"
-                  value={userData.password}
-                  onChange={(e) =>
-                    setUserData({ ...userData, password: e.target.value })
-                  }
-                  required
-                />
+                <div className="flex flex-col gap-3">
+                  <Button type="submit" className="w-full" onClick={handlesignIn}>
+                    {loading ? <Loading /> : "Sign In"}
+                  </Button>
+                </div>
               </div>
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" onClick={handlesignIn}>
-                  Sign In
-                </Button>
-              </div>
-            </div>
-            {/* <div className="mt-4 text-center text-sm">
+              {/* <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <a href="/register" className="underline underline-offset-4">
                 Sign up
               </a>
             </div> */}
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </>
 
   );
 }

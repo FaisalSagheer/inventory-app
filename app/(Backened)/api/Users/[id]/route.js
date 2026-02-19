@@ -14,7 +14,7 @@ export async function DELETE(request, { params }) {
         if (!deletedUser) {
             return new NextResponse(JSON.stringify({ message: "User not found in the db" }), { status: 400 })
         }
-        return new NextResponse(JSON.stringify({ message: 'User Deleted!', User: deletedUser }), { status: 200 })
+        return new NextResponse(JSON.stringify({ message: 'User Deletion Successfull!'}), { status: 200 })
     } catch (error) {
         return new NextResponse("Error In Deleting User" + error.message, { status: 500 })
     }
@@ -24,14 +24,13 @@ export async function DELETE(request, { params }) {
 export async function GET(request, { params }) {
     try {
         await connect()
-        const { id } = await params
+        const { id } = await params;
         const UserId = await User.findById(id);
         if (!UserId) {
             return new NextResponse(JSON.stringify({ message: "No Such Id Exist" }), { status: 400 });
         }
         return new NextResponse(JSON.stringify({ message: "User Exist!", User: UserId }), { status: 200 });
     } catch (error) {
-        console.log(error)
-        return new NextResponse({ message: 'Error Fetching Id' }, { status: 500 })
+        return new NextResponse('Error Fetching Id' + error.message, { status: 500 })
     }
 }

@@ -31,11 +31,11 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
+          {/* <div className="line-clamp-1 flex gap-2 font-medium">
             Trending up this month <IconTrendingUp className="size-4" />
-          </div>
+          </div> */}
           <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            Expenditure from the last 1 month
           </div>
         </CardFooter>
       </Card>

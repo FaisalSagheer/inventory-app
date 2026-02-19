@@ -13,17 +13,18 @@ function UserCard({ userData, setData }) {
                 method: "DELETE"
             })
             setData(prev => prev.filter(userData => userData._id !== id))
+            const response = await res.json()
             if (res.ok) {
-                toast.success(res.message)
+                return toast.success(response.message || "User Deletion Successfull!")
             } else {
-                toast.error(res.message)
+                return toast.error(response.message || "Something Went Wrong!")
             }
         } catch (error) {
             toast.error(error)
         }
     }
     return (
-        <Link href={`/User/${userData._id}`}>
+        <Link href={`/${userData._id}`}>
             <div className="mt-10 border-2 px-10">
                 <div className="text-center sm:py-8 flex flex-col items-center">
                     <div className="w-20 h-20 rounded-full flex items-center justify-center bg-gray-200 text-gray-400">
@@ -40,7 +41,9 @@ function UserCard({ userData, setData }) {
                     </div>
                     <div className='flex gap-4 pt-6 items-center'>
                         <Button variant='destructive' onClick={(e) => handleDelete(e, userData._id)}>Delete</Button>
-                        <Button variant='edit'>Edit</Button>
+                        <Button variant='edit'>
+                            Edit
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -36,6 +36,7 @@ import AddProducts from "@/dashboard/inventory/AddProducts";
 import Link from "next/link";
 import { toast } from "sonner";
 import { HandleDelete } from "@/dashboard/inventory/handleDelete";
+import { useParams } from "next/navigation";
 
 export const columns = [
   {
@@ -61,10 +62,10 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "title",
     header: () => { return (<div>Name</div >) }
     ,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("title")}</div>,
   },
   {
     accessorKey: "category",
@@ -140,13 +141,7 @@ export const columns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(item._id || item.id)}
-            >
-              Copy ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Details</DropdownMenuItem>
             <DropdownMenuItem>Edit Item</DropdownMenuItem>
             <DropdownMenuItem className="text-red-600" onClick={(e) => HandleDelete(e, item._id || item.id)}>
               Delete Item
@@ -158,18 +153,17 @@ export const columns = [
   },
 ];
 
-
-
 const handleDeleteAll = async (e) => {
   e.preventDefault()
   try {
     const res = await fetch("/api/Products", {
       method: 'DELETE'
     })
-    if (!res.ok) {
-      return toast.error(res.message)
+    const response = await res.json()
+    if (res.ok) {
+      return toast.success(response.message)
     } else {
-      return toast.success(res.message)
+      return toast.error(response.message)
     }
   } catch (error) {
     console.log(error)
@@ -177,30 +171,36 @@ const handleDeleteAll = async (e) => {
 }
 
 function DataTable() {
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
+  const [data, setData] = useState([]);
+  const params = useParams();
+  const _id = params._id;
 
   useEffect(() => {
-    try {
-      const fetchProducts = async () => {
-        const res = await fetch("/api/Products")
+    const fetchProducts = async () => {
+      try {
+        if(!_id)return
+        console.log(_id)
+        const res = await fetch(`/api/Products?_id=${_id}`)
+        const response = await res.json()
+        console.log(response)
         if (!res.ok) {
-          toast.error(res.message)
+          toast.error(response.message || "Failed to fetch products")
         }
-        const products = await res.json()
-        setData(products)
+        setData(response.products)
         setLoading(false)
       }
-      fetchProducts()
-
-    } catch (err) {
-      console.error("Failed to load data:", err);
-      setLoading(false);
+      catch (err) {
+        toast.error(err.message || "Failed to load data");
+      } finally {
+        setLoading(false);
+      }
     }
+    fetchProducts()
   }, []);
 
   const table = useReactTable({
@@ -225,7 +225,6 @@ function DataTable() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        {/* <p className="text-lg">Loading data</p> */}
         <Loading />
       </div>
     );
@@ -238,9 +237,9 @@ function DataTable() {
         <div className="flex items-center gap-4">
           <Input
             placeholder="Filter by column..."
-            value={(table.getColumn("name" ?? "weight" ?? "createdBy" ?? "amount")?.getFilterValue()) ?? ""}
+            value={(table.getColumn("title" ?? "weight" ?? "createdBy" ?? "amount")?.getFilterValue()) ?? ""}
             onChange={(e) =>
-              table.getColumn("name" ?? "weight" ?? "createdBy" ?? "amount")?.setFilterValue(e.target.value)
+              table.getColumn("title" ?? "weight" ?? "createdBy" ?? "amount")?.setFilterValue(e.target.value)
             }
             className="max-w-sm"
           />
@@ -303,7 +302,7 @@ function DataTable() {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} setData={setData}>
-                      <Link href={`/Product/${data._id || data.id}`}>
+                      <Link href={`/Product/${row.original._id || row.original.id}`}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </Link>
                     </TableCell>

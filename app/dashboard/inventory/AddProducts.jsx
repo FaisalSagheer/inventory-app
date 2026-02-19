@@ -3,12 +3,11 @@ import { ChevronDownIcon, Plus } from "lucide-react";
 import React, { useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
 import { Button } from "../../../components/ui/button";
-import { useRouter } from "next/navigation";
 import { toast, Toaster } from "sonner";
 
 function AddProducts() {
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     weight: "",
     quantity: "",
     amount: "",
@@ -16,53 +15,48 @@ function AddProducts() {
     status: ""
   });
   const handleChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
+    const { value, name } = e.target;
     setFormData((previous) => ({
       ...previous,
       [name]: value,
     }));
   };
-  // const router = useRouter()
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!formData.name || !formData.quantity || !formData.amount || !formData.category || !formData.status) {
-    //   return toast.error("All fields are required")
-    // }
-    // if (!formData.name) {
-    //   return toast.error('Name required')
-    // }
-    // if (!formData.weight) {
-    //   return toast.error('weight Required')
-    // }
-    // if (!formData.quantity) {
-    //   return toast.error('quantity Required')
-    // }
-    // if (!formData.amount) {
-    //   return toast.error('amount Required')
-    // }
-    // if (!formData.category) {
-    //   return toast.error('category Required')
-    // }
-    // if (!formData.status) {
-    //   return toast.error('status Required')
-    // }
+    if (!formData.title || !formData.quantity || !formData.amount || !formData.category || !formData.status) {
+      return toast.error("All fields are required")
+    }
+    if (!formData.title) {
+      return toast.error('Name required')
+    }
+    if (!formData.weight) {
+      return toast.error('weight Required')
+    }
+    if (!formData.quantity) {
+      return toast.error('quantity Required')
+    }
+    if (!formData.amount) {
+      return toast.error('amount Required')
+    }
+    if (!formData.category) {
+      return toast.error('category Required')
+    }
+    if (!formData.status) {
+      return toast.error('status Required')
+    }
 
     const res = await fetch("/api/Products", {
       method: "POST",
-      body: JSON.stringify({ formData }),
+      body: JSON.stringify({formData}),
       headers: { "Content-type": "application/json" },
     });
-    // console.log(formData)
     const response = await res.json();
-    if (!res.ok) {
-      toast.error(response.message)
-    }
-    else if(res.ok) {
-      toast.success(response.message)
+    if (res.ok) {
+      toast.success(response.message || "Product Created!")
       location.reload()
+    } else {
+      toast.error(response.message || "Error Creating Product!")
     }
-
   };
   return (
     <>
@@ -86,12 +80,12 @@ function AddProducts() {
                 </label>
                 <div className="mt-2">
                   <input
-                    id="name"
-                    name="name"
+                    id="title"
+                    name="title"
                     type="text"
                     onChange={handleChange}
 
-                    value={formData.name}
+                    value={formData.title}
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-black/30 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-black/40 sm:text-sm/6"
                   />
                 </div>

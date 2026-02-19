@@ -1,9 +1,10 @@
 
-import GithubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
+// import GithubProvider from "next-auth/providers/github";
+// import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import User from "@/(Backened)/(models)/User";
+import connect from "../../../../../lib/mongodb";
 
 export const options = {
   providers: [
@@ -52,6 +53,7 @@ export const options = {
       //   },
       // },
       async authorize(credentials) {
+        await connect()
         try {
           const foundUser = await User.findOne({ name: credentials.name })
             .lean()
@@ -70,10 +72,10 @@ export const options = {
               // foundUser["role"] = "admin";
               return foundUser;
             }
-            // else {
-            //   console.log("Wrong")
-            //   return null;
-            // }
+            else {
+              console.log("Wrong")
+              return null;
+            }
           }
         } catch (error) {
           console.log(error);
@@ -94,9 +96,7 @@ export const options = {
   },
   pages: {
     signIn: '/api/auth/signIn',
-    error: '/api/auth/error',
     signOut: '/',
   }
 };
 
-// export default NextAuth(options);

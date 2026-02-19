@@ -1,61 +1,60 @@
 "use client";
 
 import { ChevronDownIcon, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
 import { Button } from "../../../components/ui/button";
 import { toast } from "sonner";
 
 const AddUser = () => {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     role: "",
     password: "",
   });
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
+    const { value, name } = e.target;
     setFormData((previous) => ({
       ...previous,
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!formData.name || !formData.email || !formData.password || !formData.role) {
-      return toast.error("All fields are required")
-    }
-    if (!formData.name) {
-      return toast.error('Name required')
-    }
-    if (!formData.email) {
-      return toast.error('Email Required')
-    }
-    if (!formData.password) {
-      return toast.error('Password Required')
-    }
-    if (!formData.role) {
-      return toast.error('Role Required')
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password.trim() || !formData.role.trim() || !formData.phone.trim()) {
+      return toast.error("All fields are required!")
     }
     const res = await fetch("/api/Users", {
       method: "POST",
-      body: JSON.stringify({ formData }),
-      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({formData}),
+      headers: { "Content-Type": "application/json" },
     })
 
-    if (!res.ok) {
-      const response = await res.json()
-      return toast.error(response.message)
-    } else if(res.ok){
-      const response = await res.json()
-      return toast.success(response.message)
+    const response = await res.json()
+    if (res.ok) {
+      location.reload()
+      return toast.success(response.message || "User Created!")
+    } else {
+      return toast.error(response.message || "Error Creating User")
     }
-    // return router.refresh()
   };
+
+  const handlePhone = (e) => {
+    const { value } = e.target;
+    if (/^[\d\s\-\+\(\)]*$/.test(value)) {
+      setFormData
+        ((prev) => ({
+          ...prev,
+          phone: value
+        }))
+
+    }
+  };
+
   return (
     <>
       <Dialog>
@@ -90,6 +89,23 @@ const AddUser = () => {
 
             <div>
               <label className="block text-sm/6 font-medium text-black">
+                Phone
+              </label>
+              <div className="mt-2">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  maxLength={11}
+                  onChange={handlePhone}
+                  value={formData.phone}
+                  className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-black/30 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-black/40 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm/6 font-medium text-black">
                 Email address
               </label>
               <div className="mt-2">
@@ -105,21 +121,11 @@ const AddUser = () => {
               </div>
             </div>
 
-
-
             <div>
               <div className="flex items-center justify-between">
                 <label className="block text-sm/6 font-medium text-black">
                   Password
                 </label>
-                {/* <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-indigo-400 hover:text-indigo-300"
-                >
-                  Forgot password?
-                </a>
-              </div> */}
               </div>
               <div className="mt-2">
                 <input
@@ -152,7 +158,6 @@ const AddUser = () => {
                   <option value="" disabled hidden>Select a role</option>
                   <option value="admin">Admin</option>
                   <option value="employee">Employee</option>
-                  {/* <option>Teacher</option> */}
                 </select>
                 <ChevronDownIcon
                   aria-hidden="true"
@@ -161,14 +166,7 @@ const AddUser = () => {
               </div>
             </div>
             <div className="flex justify-end">
-              {/* <input
-                  type="submit"
-                  value="Create User"
-                  className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                /> */}
               <Button type="submit" value="Create User">Create User</Button>
-              {/* Create User */}
-              {/* </button> */}
             </div>
           </form>
         </DialogContent>

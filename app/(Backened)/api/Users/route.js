@@ -21,32 +21,33 @@ export async function POST(req) {
     const hashPassword = await bcrypt.hash(userData.password, 12)
     userData.password = hashPassword;
     await User.create(userData)
-    return new NextResponse(JSON.stringify({ message: "User Created." }, userData), { status: 201 })
+    return new NextResponse(JSON.stringify({ message: "User Created." }), { status: 201 })
   } catch (error) {
-    return new NextResponse(JSON.stringify({ message: "Error Creating User" + error.message}), { status: 500 });
+    return new NextResponse(JSON.stringify({ message: "Error Creating User" + error.message }), { status: 500 });
   }
 }
 
-export async function GET() {
+export async function GET() { 
   try {
+    await connect();
     const users = await User.find().sort({ createdAt: -1 })
-    return new NextResponse(JSON.stringify(users), { status: 200 })
-  } catch (error) {
-    return new NextResponse(JSON.stringify({ message: "Error Fetching Users" }, error), { status: 500 });
+    return NextResponse.json(users, { status: 200 });
+  } catch (_) {
+    return NextResponse.json({ message: "Error Fetching Users" }, { status: 500 });
   }
 }
 
 export async function PATCH(req) {
   try {
     const body = await req.json()
-    const { _id, newUsername } = body
+    const { _id, newUsername, newPassword, newPhone } = body
     await connect()
     if (!_id || !newUsername) {
       return new NextResponse({ message: "User not found" }, { status: 400 })
     }
     const updateUser = await User.findOneAndUpdate(
       { _id },
-      { name: newUsername },
+      { name: newUsername, password: newPassword, phone: newPhone },
       { new: true }
     )
     if (!updateUser) {

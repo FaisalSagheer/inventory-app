@@ -3,23 +3,27 @@ import { useEffect, useState } from "react";
 import AddUser from "./AddUser";
 import UserCard from "./UserCard";
 import Loading from "../../../components/Loading";
-import axios from "axios";
 import { toast } from "sonner";
 
 const Users = () => {
     const [Data, setData] = useState([])
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        try {
-            const fetchUsers = async () => {
-                const response = await axios.get('/api/Users')
-                setData(response.data)
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('/api/Users')
+                if (!response.ok) {
+                    toast.error(response.message || "Error Fetching Users")
+                }
+                const users = await response.json()
+                setData(users)
                 setLoading(false)
             }
-            fetchUsers()
-        } catch (error) {
-            toast.error(response.message)
+            catch (error) {
+                toast.error("No Internet")
+            }
         }
+        fetchUsers()
     }, [])
     if (loading) {
         return (
